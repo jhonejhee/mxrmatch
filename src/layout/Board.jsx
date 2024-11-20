@@ -8,7 +8,7 @@ import { Volume1, Volume2, VolumeOff, VolumeX } from 'lucide-react'
 
 function Board() {
     const { soundBoard, setSoundBoard } = useContext(GlobalContext);
-    const [s, setS] = useState([]);
+    const [playlist, setPlaylist] = useState([]);
 
     const toggleMute = (groupIndex, soundIndex) => {
         setSoundBoard((prevSoundBoard) => {
@@ -27,8 +27,8 @@ function Board() {
     };
 
     // useEffect(() => {
-    //     console.log(s)
-    // }, [s])
+    //     console.log(playlist)
+    // }, [playlist])
 
     return (
         <div className='w-full h-full flex gap-2 items-start justify-start'>
@@ -43,16 +43,16 @@ function Board() {
                         <ToggleGroup
                             type="multiple"
                             className="w-fit flex items-center gap-2"
-                            value={s}
-                            onValueChange={(value) => setS(value)}
+                            value={playlist}
+                            onValueChange={(value) => setPlaylist(value)}
                         >
                             {group?.sounds.map((sound, sindex) => (
                                 <div key={sindex} className="flex flex-col gap-2">
                                     {/* Sound Button */}
                                     <ToggleGroupItem
                                         value={sound.name}
-                                        className="bg-white border min-w-[100px] max-w-[100px] min-h-[60px] shadow"
-                                        variant="outline"
+                                        className={`data-[state=on]:bg-green-500 data-[state=on]:text-green-50
+                                        hover:bg-white hover:text-black border min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] shadow`}
                                     >
                                         {sound.name}
                                     </ToggleGroupItem>
