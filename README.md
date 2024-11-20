@@ -1,6 +1,6 @@
-# MxrMatch App
+# MxrMatch (Under Development)
 
-MxrMatch is a C# application designed to provide a convenient way to mix and manage multiple audio files. Whether you're organizing a soundboard or creating a collection of audio tracks for specific projects, MxrMatch helps streamline your audio workflow.
+MxrMatch is a web application designed to provide a convenient way to mix and manage multiple audio files. Whether you're organizing a soundboard or creating a collection of audio tracks for specific projects, MxrMatch helps streamline your audio workflow.
 
 ## Features
 
