@@ -7,7 +7,7 @@ import { Volume1, Volume2, VolumeOff, VolumeX, AudioLines } from 'lucide-react'
 import { Button } from 'components/ui/button';
 import { Label } from 'components/ui/label';
 import { Input } from 'components/ui/input';
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "components/ui/context-menu"
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent, ContextMenuSeparator } from "components/ui/context-menu"
 
 
 function Board() {
@@ -162,6 +162,37 @@ function Board() {
         });
     };
 
+
+    const handleRemoveSound = (groupIndex, soundIndex) => {
+        setSoundBoard((prevSoundBoard) => {
+            const updatedSoundBoard = [...prevSoundBoard];
+            const soundName = updatedSoundBoard[groupIndex].sounds[soundIndex].name;
+    
+            // Remove the sound from the group's sounds array
+            updatedSoundBoard[groupIndex].sounds = updatedSoundBoard[groupIndex].sounds.filter((_, index) => index !== soundIndex);
+    
+            return updatedSoundBoard;
+        });
+    
+        // Clean up audio instances
+        setAudioInstances((prevInstances) => {
+            const updatedInstances = { ...prevInstances };
+            const soundName = soundBoard[groupIndex].sounds[soundIndex]?.name;
+    
+            if (updatedInstances[soundName]) {
+                // Stop the audio if it's playing
+                updatedInstances[soundName].pause();
+                updatedInstances[soundName].currentTime = 0;
+                delete updatedInstances[soundName];
+            }
+    
+            return updatedInstances;
+        });
+    
+        // Remove the sound from the playlist
+        setPlaylist((prevPlaylist) => prevPlaylist.filter((name) => name !== soundBoard[groupIndex].sounds[soundIndex]?.name));
+    };
+
     // useEffect(() => {
     //     console.log(playlist)
     // }, [playlist])
@@ -253,7 +284,7 @@ function Board() {
                                             >
                                                 {sound.name}
                                             </ToggleGroupItem>
-
+                                                                         
                                             {/* Volumne Thumb */}
                                             <div className="flex flex-row flex-no-wrap gap-1 items-center justify-between">
                                                 {
@@ -286,9 +317,20 @@ function Board() {
                         <ContextMenuItem onClick={() => handleAddSound(index)}>
                             Add Sound
                         </ContextMenuItem>
-                        <ContextMenuItem onClick={() => handleRemoveGroup(index)}>
+                        <ContextMenuItem className="text-red-400 focus:text-red-400" onClick={() => handleRemoveGroup(index)}>
                             Remove Group
                         </ContextMenuItem>
+                        <ContextMenuSeparator />
+                        <ContextMenuSub>
+                            <ContextMenuSubTrigger disabled={group.sounds.length < 1}>Remove Button...</ContextMenuSubTrigger>
+                            <ContextMenuSubContent className="w-40">
+                                {group.sounds.map((sound, sindex) => (
+                                    <ContextMenuItem key={sindex} className="text-red-400 focus:text-red-400" onClick={() => handleRemoveSound(index, sindex)}>
+                                        {sound.name}
+                                    </ContextMenuItem>
+                                ))}
+                            </ContextMenuSubContent>
+                        </ContextMenuSub>
                     </ContextMenuContent>
                 </ContextMenu>
 
