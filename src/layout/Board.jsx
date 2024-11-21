@@ -209,8 +209,8 @@ function Board() {
                                             {/* Sound Button */}
                                             <ToggleGroupItem
                                                 value={sound.name}
-                                                className={`data-[state=on]:bg-green-500 data-[state=on]:text-green-50
-                                                hover:bg-white hover:text-black min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] shadow`}
+                                                className={`transition-none data-[state=on]:bg-green-500 data-[state=on]:text-green-50
+                                                hover:bg-transparent dark:hover:bg-transparent min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] shadow`}
                                                 onClick={() => toggleSound(index, sindex)}
                                             >
                                                 {sound.name}
