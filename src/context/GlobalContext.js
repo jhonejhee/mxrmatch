@@ -4,7 +4,44 @@ export const GlobalContext = createContext({});
 
 export const GlobalProvider = ({ children }) => {
     const [dark, setDark] = useState(true)
-    const [soundBoard, setSoundBoard] = useState([]);
+    const [soundBoard, setSoundBoard] = useState([
+        // {
+        //     "name": "Group1",
+        //     "sounds": [
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         // { "name": "Applaud2", "path": "", "volume": 65, "muted": false }
+        //     ]
+        // },
+        // {
+        //     "name": "Group1",
+        //     "sounds": [
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         { "name": "Applaud", "path": "", "volume": 80, "muted": true },
+        //         // { "name": "Applaud2", "path": "", "volume": 65, "muted": false }
+        //     ]
+        // },
+    ]);
     const [master, setMaster] = useState({
         "name": "master",
         "path": "",

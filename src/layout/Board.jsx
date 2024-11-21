@@ -195,7 +195,7 @@ function Board() {
 
 
     return (
-        <div className='w-full h-full flex gap-2 items-start justify-start'>
+        <div className='w-full h-full flex flex-wrap gap-2 items-start justify-start overflow-auto'>
             {/* Global Sound Settings */}
             <Card className="select-none shadow">
                     
@@ -245,7 +245,7 @@ function Board() {
                             <CardContent className="p-2 min-w-[116px] min-h-[100px]">
                                 <ToggleGroup
                                     type="multiple"
-                                    className="w-fit flex items-center gap-2"
+                                    className="w-fit flex flex-wrap items-start justify-start gap-2 max-w-[532px]"
                                     value={playlist}
                                     onValueChange={(value) => setPlaylist(value)}
                                     variant="outline"
