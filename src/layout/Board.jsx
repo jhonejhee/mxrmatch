@@ -82,7 +82,7 @@ function Board() {
                             min={0}
                             step={1}
                             className={`${master.muted ? "opacity-30" : "opacity-100"}`}
-                            thumbClassName="h-4 w-4 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ring-offset-black"
+                            thumbClassName="h-4 w-4 ring-offset-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ring-offset-black"
                             // disabled={sound.muted}
                         />
                         {master.global_volume}
@@ -132,7 +132,7 @@ function Board() {
                                             min={0}
                                             step={1}
                                             className={`${sound.muted ? "opacity-30" : "opacity-100"}`}
-                                            thumbClassName="h-4 w-4 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ring-offset-black"
+                                            thumbClassName="h-4 w-4 ring-offset-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ring-offset-black"
                                             // disabled={sound.muted}
                                         />
                                         {/* {sound.volume} */}
