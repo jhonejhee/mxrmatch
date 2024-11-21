@@ -6,26 +6,14 @@ import { Slider, SliderV } from "components/ui/slider"
 import { Volume1, Volume2, VolumeOff, VolumeX, AudioLines } from 'lucide-react'
 import { Button } from 'components/ui/button';
 import { Label } from 'components/ui/label';
-import {
-    ContextMenu,
-    ContextMenuCheckboxItem,
-    ContextMenuContent,
-    ContextMenuItem,
-    ContextMenuLabel,
-    ContextMenuRadioGroup,
-    ContextMenuRadioItem,
-    ContextMenuSeparator,
-    ContextMenuShortcut,
-    ContextMenuSub,
-    ContextMenuSubContent,
-    ContextMenuSubTrigger,
-    ContextMenuTrigger,
-  } from "components/ui/context-menu"
+import { Input } from 'components/ui/input';
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "components/ui/context-menu"
 
 
 function Board() {
     const { soundBoard, setSoundBoard, master, setMaster } = useContext(GlobalContext);
     const [playlist, setPlaylist] = useState([]);
+    const [audioInstances, setAudioInstances] = useState({});
 
     // Master
     const toggleMuteMaster = () => {
@@ -61,6 +49,80 @@ function Board() {
         });
     };
     
+
+    // Add Sound
+    const handleAddSound = (groupIndex) => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "audio/*"; // Restrict to audio files
+        input.onchange = async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const blob = new Blob([file], { type: file.type });
+                console.log("Audio Blob:", blob);
+
+                // Add sound to the group
+                const sound = {
+                    name: file.name.split(".")[0], // Use file name without extension as sound name
+                    path: URL.createObjectURL(blob),
+                    volume: 100,
+                    muted: false,
+                };
+
+                setSoundBoard((prevSoundBoard) => {
+                    const updatedSoundBoard = [...prevSoundBoard];
+                    updatedSoundBoard[groupIndex].sounds.push(sound);
+                    return updatedSoundBoard;
+                });
+            }
+        };
+        input.click(); // Open the file dialog
+    };
+
+    // Play Sound
+    const toggleSound = (groupIndex, soundIndex) => {
+        const sound = soundBoard[groupIndex].sounds[soundIndex];
+        if (!sound.path) return;
+
+        const soundName = sound.name;
+
+        // Check if the sound is already playing
+        if (audioInstances[soundName]) {
+            // Stop the audio
+            audioInstances[soundName].pause();
+            audioInstances[soundName].currentTime = 0; // Reset playback position
+            // Remove from playlist and delete instance
+            setPlaylist((prevPlaylist) => prevPlaylist.filter((name) => name !== soundName));
+            setAudioInstances((prevInstances) => {
+                const updatedInstances = { ...prevInstances };
+                delete updatedInstances[soundName];
+                return updatedInstances;
+            });
+        } else {
+            // Play the audio
+            const audio = new Audio(sound.path);
+            audio.volume = sound.volume / 100;
+
+            // Add to playlist and Audio instances
+            setPlaylist((prevPlaylist) => [...prevPlaylist, soundName]);
+            setAudioInstances((prevInstances) => ({
+                ...prevInstances,
+                [soundName]: audio,
+            }));
+
+            audio.addEventListener("ended", () => {
+                // Remove from playlist and instances when playback ends
+                setPlaylist((prevPlaylist) => prevPlaylist.filter((name) => name !== soundName));
+                setAudioInstances((prevInstances) => {
+                    const updatedInstances = { ...prevInstances };
+                    delete updatedInstances[soundName];
+                    return updatedInstances;
+                });
+            });
+
+            audio.play().catch((err) => console.error("Audio play error:", err));
+        }
+    };
 
     // useEffect(() => {
     //     console.log(playlist)
@@ -149,6 +211,7 @@ function Board() {
                                                 value={sound.name}
                                                 className={`data-[state=on]:bg-green-500 data-[state=on]:text-green-50
                                                 hover:bg-white hover:text-black min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] shadow`}
+                                                onClick={() => toggleSound(index, sindex)}
                                             >
                                                 {sound.name}
                                             </ToggleGroupItem>
@@ -182,7 +245,7 @@ function Board() {
                         </Card>
                     </ContextMenuTrigger>
                     <ContextMenuContent className="w-40">
-                        <ContextMenuItem>
+                        <ContextMenuItem onClick={() => handleAddSound(index)}>
                             Add Sound
                         </ContextMenuItem>
                     </ContextMenuContent>
