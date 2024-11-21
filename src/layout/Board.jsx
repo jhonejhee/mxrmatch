@@ -193,9 +193,6 @@ function Board() {
         setPlaylist((prevPlaylist) => prevPlaylist.filter((name) => name !== soundBoard[groupIndex].sounds[soundIndex]?.name));
     };
 
-    // useEffect(() => {
-    //     console.log(playlist)
-    // }, [playlist])
 
     return (
         <div className='w-full h-full flex gap-2 items-start justify-start'>
