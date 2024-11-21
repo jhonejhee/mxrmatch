@@ -133,6 +133,35 @@ function Board() {
         }
     };
 
+    // Remove Group
+    const handleRemoveGroup = (groupIndex) => {
+        setSoundBoard((prevSoundBoard) => {
+            const updatedSoundBoard = prevSoundBoard.filter((_, index) => index !== groupIndex);
+            return updatedSoundBoard;
+        });
+    
+        // Optionally, you can clean up audio instances from this group if needed
+        const groupSounds = soundBoard[groupIndex]?.sounds || [];
+        setAudioInstances((prevInstances) => {
+            const updatedInstances = { ...prevInstances };
+            groupSounds.forEach((sound) => {
+                if (updatedInstances[sound.name]) {
+                    // Stop the audio if it's playing
+                    updatedInstances[sound.name].pause();
+                    updatedInstances[sound.name].currentTime = 0;
+                    delete updatedInstances[sound.name];
+                }
+            });
+            return updatedInstances;
+        });
+    
+        // Optionally, remove any playing sounds of this group from the playlist
+        setPlaylist((prevPlaylist) => {
+            const groupSoundsNames = groupSounds.map((sound) => sound.name);
+            return prevPlaylist.filter((name) => !groupSoundsNames.includes(name));
+        });
+    };
+
     // useEffect(() => {
     //     console.log(playlist)
     // }, [playlist])
@@ -256,6 +285,9 @@ function Board() {
                     <ContextMenuContent className="w-40">
                         <ContextMenuItem onClick={() => handleAddSound(index)}>
                             Add Sound
+                        </ContextMenuItem>
+                        <ContextMenuItem onClick={() => handleRemoveGroup(index)}>
+                            Remove Group
                         </ContextMenuItem>
                     </ContextMenuContent>
                 </ContextMenu>
