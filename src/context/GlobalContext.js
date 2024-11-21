@@ -3,6 +3,7 @@ import React, { createContext, useState } from 'react';
 export const GlobalContext = createContext({});
 
 export const GlobalProvider = ({ children }) => {
+    const [dark, setDark] = useState(true)
     const [soundBoard, setSoundBoard] = useState([
         {
             "name": "Group1",
@@ -21,6 +22,7 @@ export const GlobalProvider = ({ children }) => {
     ]);
 
     const value={
+        dark, setDark,
         soundBoard, setSoundBoard
     }
 

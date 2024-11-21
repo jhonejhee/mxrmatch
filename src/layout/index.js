@@ -6,9 +6,7 @@ function MxrMatch() {
   return (
     <div className="space-y-4 h-full">
       <MenuBar/>
-      <GlobalProvider>
-        <Board/>
-      </GlobalProvider>
+      <Board/>
     </div>
   );
 }

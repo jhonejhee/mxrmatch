@@ -2,8 +2,13 @@
 module.exports = {
   content: ["./src/**/*.{html,js,jsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+          poppins: ['Poppins', 'sans-serif'], // Add Poppins as a custom font
+      },
+    },
   },
+  darkMode: 'selector',
   plugins: [],
 }
 
