@@ -182,7 +182,7 @@ function Board() {
                         </Card>
                     </ContextMenuTrigger>
                     <ContextMenuContent className="w-40">
-                        <ContextMenuItem inset>
+                        <ContextMenuItem>
                             Add Sound
                         </ContextMenuItem>
                     </ContextMenuContent>
