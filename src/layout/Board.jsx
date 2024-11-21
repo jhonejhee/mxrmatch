@@ -36,8 +36,8 @@ function Board() {
             {/* Global Sound Settings */}
             <Card className="select-none shadow">
                     
-                <CardHeader className="px-2 py-2">
-                    <CardTitle className="text-lg truncate">MASTER</CardTitle>
+                <CardHeader className="px-2 py-2 flex items-center justify-center text-center">
+                    <CardTitle className="text-lg truncate">M/C</CardTitle>
                 </CardHeader>
 
                 <CardContent className="p-2">
