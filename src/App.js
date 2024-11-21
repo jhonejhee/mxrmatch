@@ -9,7 +9,7 @@ function App() {
     console.log(dark)
   }, [dark])
   return (
-    <div className={`p-4 flex flex-col gap-2 bg-white dark:bg-black min-h-screen ${dark && "dark"}`}>
+    <div className={`p-4 flex flex-col gap-2 bg-zinc-100 dark:bg-zinc-900 min-h-screen ${dark && "dark"}`}>
       <MxrMatch/>
     </div>
   );
