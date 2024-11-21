@@ -36,7 +36,15 @@ function Board() {
     const toggleMute = (groupIndex, soundIndex) => {
         setSoundBoard((prevSoundBoard) => {
             const updatedSoundBoard = [...prevSoundBoard];
-            updatedSoundBoard[groupIndex].sounds[soundIndex].muted = !updatedSoundBoard[groupIndex].sounds[soundIndex].muted;
+            const sound = updatedSoundBoard[groupIndex].sounds[soundIndex];
+            sound.muted = !sound.muted;
+    
+            // Update Audio instance if sound is playing
+            const soundName = sound.name;
+            if (audioInstances[soundName]) {
+                audioInstances[soundName].muted = sound.muted;
+            }
+    
             return updatedSoundBoard;
         });
     };
@@ -102,6 +110,7 @@ function Board() {
             // Play the audio
             const audio = new Audio(sound.path);
             audio.volume = sound.volume / 100;
+            audio.muted = sound.muted; // Set mute status based on sound settings
 
             // Add to playlist and Audio instances
             setPlaylist((prevPlaylist) => [...prevPlaylist, soundName]);
@@ -250,7 +259,7 @@ function Board() {
                         </ContextMenuItem>
                     </ContextMenuContent>
                 </ContextMenu>
-                
+
             ))}
         </div>
     );
