@@ -20,10 +20,17 @@ export const GlobalProvider = ({ children }) => {
             ]
         }
     ]);
+    const [master, setMaster] = useState({
+        "name": "master",
+        "path": "",
+        "global_volume": 80,
+        "muted": true 
+    });
 
     const value={
         dark, setDark,
-        soundBoard, setSoundBoard
+        soundBoard, setSoundBoard,
+        master, setMaster
     }
 
     return (

@@ -8,9 +8,27 @@ import { Button } from 'components/ui/button';
 
 
 function Board() {
-    const { soundBoard, setSoundBoard } = useContext(GlobalContext);
+    const { soundBoard, setSoundBoard, master, setMaster } = useContext(GlobalContext);
     const [playlist, setPlaylist] = useState([]);
 
+    // Master
+    const toggleMuteMaster = () => {
+        setMaster((preMaster) => ({
+            ...preMaster,
+            muted: !preMaster.muted,
+        }));
+    };
+
+    const handleVolumeChangeMaster = (key, value) => {
+        setMaster((preMaster) => {
+            const updatedMaster = { ...preMaster };
+            updatedMaster[key] = value[0];
+            return updatedMaster;
+        });
+    };
+
+
+    // Soundboard Groups
     const toggleMute = (groupIndex, soundIndex) => {
         setSoundBoard((prevSoundBoard) => {
             const updatedSoundBoard = [...prevSoundBoard];
@@ -18,7 +36,6 @@ function Board() {
             return updatedSoundBoard;
         });
     };
-
 
     const handleVolumeChange = (groupIndex, soundIndex, value) => {
         setSoundBoard((prevSoundBoard) => {
@@ -44,21 +61,31 @@ function Board() {
 
                 <CardContent className="p-2">
                     <div className="flex flex-col gap-4 items-center justify-center">
-                        <Button variant="outline" size="icon" className="rounded-full">
-                            <VolumeX className='h-5 w-5'/>
+                        <Button
+                            variant={`${master.muted ? "destructive" : "outline"}`}
+                            size="icon"
+                            className={`rounded-full`}
+                            onClick={toggleMuteMaster}
+                        >
+                            {
+                                master.muted ? (<VolumeX className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster(i)}/>)
+                                : master.global_volume === 0 ? (<VolumeOff className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
+                                : master.global_volume < 50 ? (<Volume1 className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
+                                : (<Volume2 className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
+                            }
                         </Button>
                         <SliderV
                             defaultValue={[50]}
-                            value={[soundBoard[0].sounds[0].volume]}
-                            onValueChange={(value) => handleVolumeChange(0, 0, value)}
+                            value={[master.global_volume]}
+                            onValueChange={(value) => handleVolumeChangeMaster("global_volume", value)}
                             max={100}
                             min={0}
                             step={1}
-                            // className={`${sound.muted ? "opacity-30" : "opacity-100"}`}
+                            className={`${master.muted ? "opacity-30" : "opacity-100"}`}
                             thumbClassName="h-4 w-4 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ring-offset-black"
                             // disabled={sound.muted}
                         />
-                        {soundBoard[0].sounds[0].volume}
+                        {master.global_volume}
                     </div>
                 </CardContent>
             </Card>
@@ -92,9 +119,9 @@ function Board() {
                                     {/* Volumne Thumb */}
                                     <div className="flex flex-row flex-no-wrap gap-1 items-center justify-between">
                                         {
-                                            sound.muted ? (<VolumeX className='w-4 h-4 cursor-pointer text-red-400' onClick={() => toggleMute(index, sindex)}/>)
+                                            sound.muted ? (<VolumeX className='w-4 h-4 cursor-pointer text-red-400 dark:text-red-500' onClick={() => toggleMute(index, sindex)}/>)
                                             : sound.volume === 0 ? (<VolumeOff className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
-                                            : sound.volume < 0.5 ? (<Volume1 className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
+                                            : sound.volume < 50 ? (<Volume1 className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
                                             : (<Volume2 className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
                                         }
                                         <Slider
