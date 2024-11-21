@@ -5,7 +5,7 @@ import { Sun, Moon } from 'lucide-react';
 import { GlobalContext } from 'context/GlobalContext';
 
 function MenuBar() {
-    const {dark, setDark} = useContext(GlobalContext);
+    const {dark, setDark, soundBoard, setSoundBoard} = useContext(GlobalContext);
 
     return (
         <Menubar className="border shadow flex justify-between">
