@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Switch } from "components/ui/switch";
 import { Sun, Moon } from 'lucide-react';
 import { GlobalContext } from 'context/GlobalContext';
-import { Input } from 'components/ui/input';
+import InputValidation from 'components/ui/input-validation';
 import { Button } from 'components/ui/button';
 
 function MenuBar() {
@@ -54,6 +54,8 @@ function AddGroupDialog({ isAddOpen, setIsAddOpen }) {
 
     const handleAddGroup = (e) => {
         e.preventDefault()
+        if (!userInput.trim()) return;
+
         const newGroup = {
             name: userInput.trim(),
             sounds: [
@@ -71,6 +73,14 @@ function AddGroupDialog({ isAddOpen, setIsAddOpen }) {
         }
     };
 
+    const handleGroupNameValidation = (value) => {
+        // value = value.trim()
+        if (!value.trim()) {
+            return { isValid: false, message: `Field cannot be empty.` };
+        }
+        return { isValid: true, message: `Valid value` };
+    }
+
     return (
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
             <DialogContent>
@@ -81,12 +91,13 @@ function AddGroupDialog({ isAddOpen, setIsAddOpen }) {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex">
-                    <Input
+                    <InputValidation
                     id="user-input"
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     className="col-span-3"
                     onKeyDown={handleKeyDown}
+                    validation={handleGroupNameValidation}
                     />
                 </div>
                 <DialogFooter>
