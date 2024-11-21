@@ -23,12 +23,13 @@ Slider.displayName = SliderPrimitive.Root.displayName
 const SliderV = React.forwardRef(({ className, trackClassName, thumbClassName, ...props }, ref) => (
   <form>
     <SliderPrimitive.Root
-      // className="relative flex items-center data-[orientation=vertical]:flex-col data-[orientation=vertical]:w-5 data-[orientation=vertical]:h-24"
+      ref={ref}
       className={cn("relative flex w-full touch-none select-none items-center data-[orientation=vertical]:flex-col data-[orientation=vertical]:w-5 data-[orientation=vertical]:h-24", className)}
       defaultValue={[50]}
       max={100}
       step={1}
       orientation="vertical"
+      {...props}
     >
       <SliderPrimitive.Track
         // className="relative flex-grow bg-gray-500 h-[3px] data-[orientation=vertical]:w-full"
