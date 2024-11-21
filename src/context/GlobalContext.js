@@ -9,13 +9,13 @@ export const GlobalProvider = ({ children }) => {
             "name": "Group1",
             "sounds": [
                 { "name": "Applaud", "path": "", "volume": 80, "muted": true },
-                { "name": "Applaud2", "path": "", "volume": 60, "muted": false }
+                { "name": "Applaud2", "path": "", "volume": 65, "muted": false }
             ]
         },
         {
             "name": "Group2",
             "sounds": [
-                { "name": "Clap", "path": "", "volume": 50, "muted": true },
+                { "name": "Clap", "path": "", "volume": 55, "muted": true },
                 { "name": "Clap2", "path": "", "volume": 100, "muted": false }
             ]
         }

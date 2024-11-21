@@ -19,13 +19,15 @@ function Board() {
         });
     };
 
+
     const handleVolumeChange = (groupIndex, soundIndex, value) => {
         setSoundBoard((prevSoundBoard) => {
             const updatedSoundBoard = [...prevSoundBoard];
-            updatedSoundBoard[groupIndex].sounds[soundIndex].volume = value[0] / 100;
+            updatedSoundBoard[groupIndex].sounds[soundIndex].volume = value[0];
             return updatedSoundBoard;
         });
     };
+    
 
     // useEffect(() => {
     //     console.log(playlist)
@@ -47,8 +49,8 @@ function Board() {
                         </Button>
                         <SliderV
                             defaultValue={[50]}
-                            value={[soundBoard[0].sounds[0].volume * 100]}
-                            // onValueChange={(value) => handleVolumeChange(index, sindex, value)}
+                            value={[soundBoard[0].sounds[0].volume]}
+                            onValueChange={(value) => handleVolumeChange(0, 0, value)}
                             max={100}
                             min={0}
                             step={1}
@@ -56,6 +58,7 @@ function Board() {
                             thumbClassName="h-4 w-4 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ring-offset-black"
                             // disabled={sound.muted}
                         />
+                        {soundBoard[0].sounds[0].volume}
                     </div>
                 </CardContent>
             </Card>
@@ -89,14 +92,14 @@ function Board() {
                                     {/* Volumne Thumb */}
                                     <div className="flex flex-row flex-no-wrap gap-1 items-center justify-between">
                                         {
-                                            sound.muted ? (<VolumeX className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
+                                            sound.muted ? (<VolumeX className='w-4 h-4 cursor-pointer text-red-400' onClick={() => toggleMute(index, sindex)}/>)
                                             : sound.volume === 0 ? (<VolumeOff className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
                                             : sound.volume < 0.5 ? (<Volume1 className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
                                             : (<Volume2 className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
                                         }
                                         <Slider
                                             defaultValue={[50]}
-                                            value={[sound.volume * 100]}
+                                            value={[sound.volume]}
                                             onValueChange={(value) => handleVolumeChange(index, sindex, value)}
                                             max={100}
                                             min={0}
@@ -105,6 +108,7 @@ function Board() {
                                             thumbClassName="h-4 w-4 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ring-offset-black"
                                             // disabled={sound.muted}
                                         />
+                                        {/* {sound.volume} */}
                                     </div>
 
                                 </div>
