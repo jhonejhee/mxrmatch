@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from 'context/GlobalContext';
 import { ToggleGroup, ToggleGroupItem } from "components/ui/toggle-group"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "components/ui/card"
-import { Slider } from "components/ui/slider"
+import { Slider, SliderV } from "components/ui/slider"
 import { Volume1, Volume2, VolumeOff, VolumeX } from 'lucide-react'
 import { Button } from 'components/ui/button';
 
@@ -45,10 +45,9 @@ function Board() {
                         <Button variant="outline" size="icon" className="rounded-full">
                             <VolumeX className='h-5 w-5'/>
                         </Button>
-                        <Slider
-                            orientation="vertical"
+                        <SliderV
                             defaultValue={[50]}
-                            // value={[sound.volume * 100]}
+                            value={[soundBoard[0].sounds[0].volume * 100]}
                             // onValueChange={(value) => handleVolumeChange(index, sindex, value)}
                             max={100}
                             min={0}
