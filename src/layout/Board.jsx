@@ -215,7 +215,7 @@ function Board() {
                             onClick={toggleMuteMaster}
                         >
                             {
-                                master.muted ? (<VolumeX className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster(i)}/>)
+                                master.muted ? (<VolumeX className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
                                 : master.global_volume === 0 ? (<VolumeOff className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
                                 : master.global_volume < 50 ? (<Volume1 className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
                                 : (<Volume2 className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
