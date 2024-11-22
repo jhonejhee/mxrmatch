@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { GlobalContext } from 'context/GlobalContext';
 import { ToggleGroup, ToggleGroupItem } from "components/ui/toggle-group"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card"
 import { Slider, SliderV } from "components/ui/slider"
 import { Volume1, Volume2, VolumeOff, VolumeX, AudioLines } from 'lucide-react'
 import { Button } from 'components/ui/button';
 import { Label } from 'components/ui/label';
-import { Input } from 'components/ui/input';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent, ContextMenuSeparator } from "components/ui/context-menu"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "components/ui/dialog"
+import InputValidation from 'components/ui/input-validation';
 
 function Board() {
     const { soundBoard, setSoundBoard, master, setMaster } = useContext(GlobalContext);
@@ -377,6 +377,14 @@ function SoundNameInput({ isSoundInputOpen, setIsSoundInputOpen, handleAddSound 
         setIsSoundInputOpen(false); // Close the dialog
     };
 
+    const handleSoundNameValidation = (value) => {
+        // value = value.trim()
+        if (!value.trim()) {
+            return { isValid: false, message: `Field cannot be empty.` };
+        }
+        return { isValid: true, message: `Valid value` };
+    }
+
     return (
         <Dialog open={isSoundInputOpen} onOpenChange={setIsSoundInputOpen}>
             <DialogContent>
@@ -386,11 +394,12 @@ function SoundNameInput({ isSoundInputOpen, setIsSoundInputOpen, handleAddSound 
                         Provide a label for the sound you're adding.
                     </DialogDescription>
                 </DialogHeader>
-                <Input
+                <InputValidation
                     value={soundLabel}
                     onChange={(e) => setSoundLabel(e.target.value)}
                     placeholder="Sound Label"
                     onKeyDown={handleKeyDown}
+                    validation={handleSoundNameValidation}
                     autoFocus
                 />
                 <DialogFooter>
