@@ -8,12 +8,14 @@ import { Button } from 'components/ui/button';
 import { Label } from 'components/ui/label';
 import { Input } from 'components/ui/input';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent, ContextMenuSeparator } from "components/ui/context-menu"
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "components/ui/dialog"
 
 function Board() {
     const { soundBoard, setSoundBoard, master, setMaster } = useContext(GlobalContext);
     const [playlist, setPlaylist] = useState([]);
     const [audioInstances, setAudioInstances] = useState({});
+    const [isSoundInputOpen, setIsSoundInputOpen] = useState(false);
+    const [addSoundCallback, setAddSoundCallback] = useState(null);
 
     // Master
     const toggleMuteMaster = () => {
@@ -63,28 +65,37 @@ function Board() {
         const input = document.createElement("input");
         input.type = "file";
         input.accept = "audio/*"; // Restrict to audio files
+    
         input.onchange = async (event) => {
             const file = event.target.files[0];
             if (file) {
                 const blob = new Blob([file], { type: file.type });
-                console.log("Audio Blob:", blob);
-
-                // Add sound to the group
-                const sound = {
-                    name: file.name.split(".")[0], // Use file name without extension as sound name
-                    path: URL.createObjectURL(blob),
-                    volume: 100,
-                    muted: false,
+                const soundPath = URL.createObjectURL(blob);
+    
+                // Show label input modal
+                setIsSoundInputOpen(true);
+    
+                // Wait for label input and add sound
+                const addSoundWithLabel = (label) => {
+                    const sound = {
+                        name: label,
+                        path: soundPath,
+                        volume: 100,
+                        muted: false,
+                    };
+                    setSoundBoard((prevSoundBoard) => {
+                        const updatedSoundBoard = [...prevSoundBoard];
+                        updatedSoundBoard[groupIndex].sounds.push(sound);
+                        return updatedSoundBoard;
+                    });
                 };
-
-                setSoundBoard((prevSoundBoard) => {
-                    const updatedSoundBoard = [...prevSoundBoard];
-                    updatedSoundBoard[groupIndex].sounds.push(sound);
-                    return updatedSoundBoard;
-                });
+    
+                // Pass the callback to handle label input
+                setAddSoundCallback(() => addSoundWithLabel);
             }
         };
-        input.click(); // Open the file dialog
+    
+        input.click();
     };
 
     // Play Sound
@@ -275,11 +286,13 @@ function Board() {
                                             {/* Sound Button */}
                                             <ToggleGroupItem
                                                 value={sound.name}
-                                                className={`transition-none data-[state=on]:bg-green-500 data-[state=on]:text-green-50
+                                                className={`flex items-center transition-none data-[state=on]:bg-green-500 data-[state=on]:text-green-50
                                                 hover:bg-transparent dark:hover:bg-transparent min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] shadow`}
                                                 onClick={() => toggleSound(index, sindex)}
                                             >
-                                                {sound.name}
+                                                <span className="line-clamp-2 break-words text-xs overflow-hidden w-full">
+                                                    {sound.name}
+                                                </span>
                                             </ToggleGroupItem>
                                                                          
                                             {/* Volumne Thumb */}
@@ -332,7 +345,62 @@ function Board() {
                 </ContextMenu>
 
             ))}
+            {/* Sound Name Input Dialog */}
+            <SoundNameInput
+                isSoundInputOpen={isSoundInputOpen}
+                setIsSoundInputOpen={setIsSoundInputOpen}
+                handleAddSound={(label) => {
+                    if (addSoundCallback) {
+                        addSoundCallback(label);
+                        setAddSoundCallback(null); // Clear the callback after use
+                    }
+                }}
+            />
+
         </div>
+    );
+}
+
+function SoundNameInput({ isSoundInputOpen, setIsSoundInputOpen, handleAddSound }) {
+    const [soundLabel, setSoundLabel] = useState("");
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleAddSoundLabel();
+        }
+    };
+
+    const handleAddSoundLabel = () => {
+        if (!soundLabel.trim()) return; // Don't add sound if label is empty
+        handleAddSound(soundLabel.trim());
+        setSoundLabel(""); // Clear the input
+        setIsSoundInputOpen(false); // Close the dialog
+    };
+
+    return (
+        <Dialog open={isSoundInputOpen} onOpenChange={setIsSoundInputOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Enter Sound Label</DialogTitle>
+                    <DialogDescription>
+                        Provide a label for the sound you're adding.
+                    </DialogDescription>
+                </DialogHeader>
+                <Input
+                    value={soundLabel}
+                    onChange={(e) => setSoundLabel(e.target.value)}
+                    placeholder="Sound Label"
+                    onKeyDown={handleKeyDown}
+                    autoFocus
+                />
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsSoundInputOpen(false)}>
+                        Cancel
+                    </Button>
+                    <Button onClick={handleAddSoundLabel}>Add</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 }
 
