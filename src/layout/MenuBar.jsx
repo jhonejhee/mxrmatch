@@ -3,12 +3,13 @@ import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } fro
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup } from "components/ui/select";
 import { Switch } from "components/ui/switch";
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Trash2 } from 'lucide-react';
 import { GlobalContext } from 'context/GlobalContext';
 import InputValidation from 'components/ui/input-validation';
 import { Button } from 'components/ui/button';
 import { toast } from "sonner";
 import db from 'services/db';
+import { ScrollArea } from 'components/ui/scroll-area';
 
 function MenuBar() {
     const { dark, setDark, setSoundBoard } = useContext(GlobalContext);
@@ -218,16 +219,37 @@ function LoadPresetDialog({ isOpen, setIsOpen }) {
     // Fetch all preset names when the dialog opens
     useEffect(() => {
         if (isOpen) {
-            db.allDocs({ include_docs: false })
-                .then((result) => {
-                    const presetNames = result.rows.map((row) => row.id);
-                    setPresets(presetNames);
-                })
-                .catch((err) => {
-                    console.error("Error fetching presets:", err);
-                });
+            fetchPresets();
         }
-    }, [isOpen]); // Runs only when `isOpen` changes
+    }, [isOpen]);
+
+    const fetchPresets = useCallback(() => {
+        db.allDocs({ include_docs: false })
+            .then((result) => {
+                const presetNames = result.rows.map((row) => row.id);
+                setPresets(presetNames);
+            })
+            .catch((err) => {
+                console.error("Error fetching presets:", err);
+            });
+    }, []);
+
+    // Function to delete a preset
+    const handleDeletePreset = useCallback((presetName) => {
+        if (!presetName) return;
+
+        db.get(presetName)
+            .then((doc) => db.remove(doc))
+            .then(() => {
+                toast(`${presetName}`, {description: "Preset deleted successfully!"});
+                // Update the presets list
+                setPresets((prevPresets) => prevPresets.filter((preset) => preset !== presetName));
+            })
+            .catch((err) => {
+                console.error("Error deleting preset:", err);
+                toast("Error", { description: "Failed to delete the preset. Please try again." });
+            });
+    }, []);
 
     // Load the selected preset
     const handleLoadPreset = useCallback(() => {
@@ -282,9 +304,20 @@ function LoadPresetDialog({ isOpen, setIsOpen }) {
                             <SelectValue placeholder="Select Preset Name" />
                         </SelectTrigger>
                         <SelectContent>
-                            {presets.map((preset) => (
-                                <SelectItem key={preset} value={preset}>{preset}</SelectItem>
-                            ))}
+                            <ScrollArea className="max-h-[200px] pr-2">
+                                {presets.map((preset) => (
+                                    <div className="flex flex-row gap-2 items-center" key={preset}>
+                                        <SelectItem value={preset}>{preset}</SelectItem>
+                                        <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            onClick={() => handleDeletePreset(preset)}
+                                        >
+                                            <Trash2 className="w-4 h-4 text-red-400" />
+                                        </Button>
+                                    </div>
+                                ))}
+                            </ScrollArea>
                         </SelectContent>
                     </Select>
                 </div>
