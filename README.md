@@ -11,13 +11,16 @@ MxrMatch is a web application designed to provide a convenient way to mix and ma
 
 ## Usage
 - **Adding Sounds**: Use the 'New > Group' menu to organize sounds.
+- **Deleting Sounds**: Right click a group > Remove Sound... > Sound Name.
 - **Adjusting Volume**: Use the volume sliders below each sound to control the individual levels.
+- **Muting Sound**: Click the volume icon beside the sound volume.
+- **Saving Preset**: Click the Dashboard > Save... > Type Preset Name.
+- **Loading Preset**: Click the Dashboard > Load... > Select Preset Name.
 
 ## Roadmap
-- Add support for more audio file formats.
-- Add support for drag and drop.
-- Add support for saving and loading presets.
 - Implement global mute functionality.
+- Implement responsive masonry grid layout.
+- Implement group properties (max column).
 
 ## Contributing
 Feel free to contribute to the project by creating pull requests or submitting issues for any bugs or feature requests.
