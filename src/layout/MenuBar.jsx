@@ -44,6 +44,13 @@ function MenuBar() {
                             <MenubarItem className="text-red-400 focus:text-red-400" onClick={handleClearBoard}>Clear Board</MenubarItem>
                         </MenubarContent>
                     </MenubarMenu>
+                    <MenubarMenu>
+                        <a variant="link" href="https://github.com/jhonejhee/mxrmatch" target="_blank"
+                            className="flex cursor-default select-none items-center rounded-sm px-3 py-1.5 text-sm font-medium outline-none focus:bg-zinc-0 focus:text-zinc-900 data-[state=open]:bg-zinc-100 data-[state=open]:text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:bg-zinc-850 dark:focus:text-zinc-50 dark:data-[state=open]:bg-zinc-800 dark:data-[state=open]:text-zinc-50"
+                        >
+                            About
+                        </a>
+                    </MenubarMenu>
                 </div>
                 <MenubarMenu>
                     <div className="flex items-center space-x-2 px-2">
@@ -58,6 +65,7 @@ function MenuBar() {
                         }
                     </div>
                 </MenubarMenu>
+
                 <AddGroupDialog isOpen={isAddOpen} setIsOpen={setIsAddOpen} />
                 <SavePresetDialog isOpen={isSaveOpen} setIsOpen={setIsSaveOpen} />
                 <LoadPresetDialog isOpen={isLoadOpen} setIsOpen={setIsLoadOpen} />
