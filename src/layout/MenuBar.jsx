@@ -12,7 +12,7 @@ import db from 'services/db';
 import { ScrollArea } from 'components/ui/scroll-area';
 
 function MenuBar() {
-    const { dark, setDark, setSoundBoard } = useContext(GlobalContext);
+    const { dark, setDark, soundBoard, setSoundBoard } = useContext(GlobalContext);
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isSaveOpen, setIsSaveOpen] = useState(false);
     const [isLoadOpen, setIsLoadOpen] = useState(false);
@@ -28,7 +28,7 @@ function MenuBar() {
                     <MenubarMenu>
                         <MenubarTrigger className="relative rounded">Dashboard</MenubarTrigger>
                         <MenubarContent>
-                            <MenubarItem onClick={() => setIsSaveOpen(true)}>Save...</MenubarItem>
+                            <MenubarItem onClick={() => {soundBoard.length > 0 ? setIsSaveOpen(true) : toast("Cannot save preset.", {description: "Please add a group first."}) }}>Save...</MenubarItem>
                             <MenubarItem onClick={() => setIsLoadOpen(true)}>Load...</MenubarItem>
                         </MenubarContent>
                     </MenubarMenu>
@@ -119,7 +119,7 @@ function SavePresetDialog({ isOpen, setIsOpen }) {
 
     const handleSavePreset = useCallback(() => {
         if (!presetName.trim()) return;
-
+        
         const newPreset = {
             _id: presetName.trim(),
             soundBoard: soundBoard.map((group) => ({
