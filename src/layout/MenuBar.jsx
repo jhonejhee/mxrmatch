@@ -116,10 +116,12 @@ function AddGroupDialog({ isOpen, setIsOpen }) {
 function SavePresetDialog({ isOpen, setIsOpen }) {
     const { soundBoard } = useContext(GlobalContext);
     const [presetName, setPresetName] = useState("");
+    const [showOverwriteDialog, setShowOverwriteDialog] = useState(false);
+    const [newPresetData, setNewPresetData] = useState(null);
 
     const handleSavePreset = useCallback(() => {
         if (!presetName.trim()) return;
-        
+
         const newPreset = {
             _id: presetName.trim(),
             soundBoard: soundBoard.map((group) => ({
@@ -133,7 +135,6 @@ function SavePresetDialog({ isOpen, setIsOpen }) {
             })),
             _attachments: {}, // Prepare for attachments
         };
-        // console.log(newPreset)
 
         const blobPromises = [];
         soundBoard.forEach((group) => {
@@ -155,58 +156,107 @@ function SavePresetDialog({ isOpen, setIsOpen }) {
             });
         });
 
-        // Once all Blob URLs are resolved, save the preset
+        // Once all Blob URLs are resolved, attempt to save the preset
         Promise.all(blobPromises)
-        .then(() => {
-            db.put(newPreset)
-                .then(() => {
-                    toast(`${presetName.trim()}`, { description: "Preset successfully saved." });
-                })
-                .catch((err) => {
-                    if (err.name === "conflict") {
-                        toast("Error", {
-                            description: "A preset with this name already exists. Please choose a different name.",
-                        });
-                    } else {
-                        console.error("Error saving preset:", err);
-                        toast("Error", { description: "Error saving preset. Please try again." });
-                    }
-                });
-        })
-        .catch((err) => {
-            console.error("Error processing Blobs for saving:", err);
-        });
-
-        setPresetName("");
-        setIsOpen(false);
+            .then(() => {
+                db.put(newPreset)
+                    .then(() => {
+                        toast(`${presetName.trim()}`, { description: "Preset successfully saved." });
+                        setPresetName("");
+                        setIsOpen(false);
+                    })
+                    .catch((err) => {
+                        if (err.name === "conflict") {
+                            // Preset already exists, ask for confirmation to overwrite
+                            setNewPresetData(newPreset); // Store the new preset data
+                            setShowOverwriteDialog(true); // Show overwrite confirmation dialog
+                        } else {
+                            console.error("Error saving preset:", err);
+                            toast("Error", { description: "Error saving preset. Please try again." });
+                        }
+                    });
+            })
+            .catch((err) => {
+                console.error("Error processing Blobs for saving:", err);
+            });
     }, [presetName, soundBoard, setIsOpen]);
 
+    const handleOverwritePreset = useCallback(() => {
+        if (!newPresetData) return;
+
+        // Get the existing document to retrieve _rev
+        db.get(newPresetData._id)
+            .then((doc) => {
+                newPresetData._rev = doc._rev; // Set the _rev to allow overwrite
+                return db.put(newPresetData);
+            })
+            .then(() => {
+                toast(`${presetName.trim()}`, { description: "Preset successfully updated." });
+                setPresetName("");
+                setIsOpen(false);
+                setShowOverwriteDialog(false);
+                setNewPresetData(null);
+            })
+            .catch((err) => {
+                console.error("Error overwriting preset:", err);
+                toast("Error", { description: "Error updating preset. Please try again." });
+            });
+    }, [newPresetData, presetName, setIsOpen]);
+
     const handleValidation = useCallback((value) => {
-        return value.trim() ? 
-            { isValid: true, message: "Valid value" } : 
-            { isValid: false, message: "Field cannot be empty." };
+        return value.trim()
+            ? { isValid: true, message: "Valid value" }
+            : { isValid: false, message: "Field cannot be empty." };
     }, []);
 
     return (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Enter Preset Name</DialogTitle>
-                    <DialogDescription>Please provide the requested information below.</DialogDescription>
-                </DialogHeader>
-                <InputValidation
-                    id="preset-name-input"
-                    value={presetName}
-                    onChange={(e) => setPresetName(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSavePreset()}
-                    validation={handleValidation}
-                />
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                    <Button onClick={handleSavePreset}>Save</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+        <>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Enter Preset Name</DialogTitle>
+                        <DialogDescription>Please provide the requested information below.</DialogDescription>
+                    </DialogHeader>
+                    <InputValidation
+                        id="preset-name-input"
+                        value={presetName}
+                        onChange={(e) => setPresetName(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSavePreset()}
+                        validation={handleValidation}
+                    />
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button onClick={handleSavePreset}>Save</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Overwrite Confirmation Dialog */}
+            <Dialog open={showOverwriteDialog} onOpenChange={setShowOverwriteDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Preset Already Exists</DialogTitle>
+                        <DialogDescription>
+                            A preset with the name "{presetName}" already exists. Do you want to overwrite it?
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setShowOverwriteDialog(false);
+                                setNewPresetData(null);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button onClick={handleOverwritePreset}>Overwrite</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </>
     );
 }
 
