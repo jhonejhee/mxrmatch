@@ -11,45 +11,57 @@ import { toast } from "sonner";
 import db from 'services/db';
 
 function MenuBar() {
-    const { dark, setDark } = useContext(GlobalContext);
+    const { dark, setDark, setSoundBoard } = useContext(GlobalContext);
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isSaveOpen, setIsSaveOpen] = useState(false);
     const [isLoadOpen, setIsLoadOpen] = useState(false);
 
+    const handleClearBoard = () => {
+        setSoundBoard([]);
+    };
+
     return (
-        <Menubar className="border shadow flex justify-between">
-            <div className="flex">
-                <MenubarMenu>
-                    <MenubarTrigger className="relative rounded">Dashboard</MenubarTrigger>
-                    <MenubarContent>
-                        <MenubarItem onClick={() => setIsSaveOpen(true)}>Save...</MenubarItem>
-                        <MenubarItem onClick={() => setIsLoadOpen(true)}>Load...</MenubarItem>
-                    </MenubarContent>
-                </MenubarMenu>
-                <MenubarMenu>
-                    <MenubarTrigger className="relative rounded">Group</MenubarTrigger>
-                    <MenubarContent>
-                        <MenubarItem onClick={() => setIsAddOpen(true)}>Add Group</MenubarItem>
-                    </MenubarContent>
-                </MenubarMenu>
-            </div>
-            <MenubarMenu>
-                <div className="flex items-center space-x-2 px-2">
-                    <Switch
-                        id="dark-mode-toggle"
-                        checked={dark}
-                        onCheckedChange={setDark}
-                    />
-                    {dark ? 
-                        <Moon className="w-5 h-5 dark:text-zinc-50" /> : 
-                        <Sun className="w-5 h-5 dark:text-zinc-800" />
-                    }
+        <div className="flex flex-col gap-2">
+            <Menubar className="border shadow flex justify-between">
+                <div className="flex">
+                    <MenubarMenu>
+                        <MenubarTrigger className="relative rounded">Dashboard</MenubarTrigger>
+                        <MenubarContent>
+                            <MenubarItem onClick={() => setIsSaveOpen(true)}>Save...</MenubarItem>
+                            <MenubarItem onClick={() => setIsLoadOpen(true)}>Load...</MenubarItem>
+                        </MenubarContent>
+                    </MenubarMenu>
+                    <MenubarMenu>
+                        <MenubarTrigger className="relative rounded">Group</MenubarTrigger>
+                        <MenubarContent>
+                            <MenubarItem onClick={() => setIsAddOpen(true)}>Add Group</MenubarItem>
+                        </MenubarContent>
+                    </MenubarMenu>
+                    <MenubarMenu>
+                        <MenubarTrigger className="relative rounded">Clear</MenubarTrigger>
+                        <MenubarContent>
+                            <MenubarItem className="text-red-400 focus:text-red-400" onClick={handleClearBoard}>Clear Board</MenubarItem>
+                        </MenubarContent>
+                    </MenubarMenu>
                 </div>
-            </MenubarMenu>
-            <AddGroupDialog isOpen={isAddOpen} setIsOpen={setIsAddOpen} />
-            <SavePresetDialog isOpen={isSaveOpen} setIsOpen={setIsSaveOpen} />
-            <LoadPresetDialog isOpen={isLoadOpen} setIsOpen={setIsLoadOpen} />
-        </Menubar>
+                <MenubarMenu>
+                    <div className="flex items-center space-x-2 px-2">
+                        <Switch
+                            id="dark-mode-toggle"
+                            checked={dark}
+                            onCheckedChange={setDark}
+                        />
+                        {dark ? 
+                            <Moon className="w-5 h-5 dark:text-zinc-50" /> : 
+                            <Sun className="w-5 h-5 dark:text-zinc-800" />
+                        }
+                    </div>
+                </MenubarMenu>
+                <AddGroupDialog isOpen={isAddOpen} setIsOpen={setIsAddOpen} />
+                <SavePresetDialog isOpen={isSaveOpen} setIsOpen={setIsSaveOpen} />
+                <LoadPresetDialog isOpen={isLoadOpen} setIsOpen={setIsLoadOpen} />
+            </Menubar>
+        </div>
     );
 }
 
@@ -113,7 +125,7 @@ function SavePresetDialog({ isOpen, setIsOpen }) {
                 name: group.name,
                 sounds: group.sounds.map((sound) => ({
                     name: sound.name,
-                    path: sound.path, // Replace Blob URL with the attachment key (filename)
+                    path: sound.name, // Replace Blob URL with the attachment key (filename)
                     volume: sound.volume,
                     muted: sound.muted,
                 })),
@@ -226,7 +238,7 @@ function LoadPresetDialog({ isOpen, setIsOpen }) {
                 const loadedSoundBoard = doc.soundBoard.map((group) => ({
                     ...group,
                     sounds: group.sounds.map((sound) => {
-                        const attachment = doc._attachments[sound.path];
+                        const attachment = doc._attachments[sound.name];
                         if (attachment) {
                             // Decode Base64
                             const byteCharacters = atob(attachment.data); // Decode Base64
