@@ -250,6 +250,7 @@ function LoadPresetDialog({ isOpen, setIsOpen }) {
                 console.error("Error loading preset:", err);
                 toast("Error", { description: "Failed to load the selected preset." });
             });
+        setSelectedPreset("");
     }, [selectedPreset, setSoundBoard, setIsOpen]);
 
     return (
