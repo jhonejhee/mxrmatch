@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import MxrMatch from "layout/index.js";
 import { GlobalContext } from 'context/GlobalContext';
 
