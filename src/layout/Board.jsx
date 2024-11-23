@@ -333,7 +333,7 @@ function Board() {
                         </ContextMenuItem>
                         <ContextMenuSeparator />
                         <ContextMenuSub>
-                            <ContextMenuSubTrigger disabled={group.sounds.length < 1}>Remove Button...</ContextMenuSubTrigger>
+                            <ContextMenuSubTrigger disabled={group.sounds.length < 1}>Remove Sound...</ContextMenuSubTrigger>
                             <ContextMenuSubContent className="w-40">
                                 {group.sounds.map((sound, sindex) => (
                                     <ContextMenuItem key={sindex} className="text-red-400 focus:text-red-400" onClick={() => handleRemoveSound(index, sindex)}>
