@@ -6,6 +6,7 @@ import { Sun, Moon } from 'lucide-react';
 import { GlobalContext } from 'context/GlobalContext';
 import InputValidation from 'components/ui/input-validation';
 import { Button } from 'components/ui/button';
+import { toast } from "sonner";
 import db from 'services/db';
 
 function MenuBar() {
@@ -52,6 +53,7 @@ function MenuBar() {
 function AddGroupDialog({ isOpen, setIsOpen }) {
     const { setSoundBoard } = useContext(GlobalContext);
     const [userInput, setUserInput] = useState("");
+    
 
     const handleAddGroup = useCallback(() => {
         if (!userInput.trim()) return;
@@ -106,15 +108,16 @@ function SavePresetDialog({ isOpen, setIsOpen }) {
             _id: presetName.trim(),
             soundBoard,
         };
+        console.log(newPreset)
 
         db.put(newPreset)
-            .then(() => alert("Preset saved successfully!"))
+            .then(() => toast(`${presetName.trim()}`, {description: "Preset successfully saved."}))
             .catch(err => {
                 if (err.name === "conflict") {
-                    alert("A preset with this name already exists. Please choose a different name.");
+                    toast(`Error`, {description: "A preset with this name already exists. Please choose a different name."});
                 } else {
                     console.error("Error saving preset:", err);
-                    alert("Error saving preset. Please try again.");
+                    toast(`Error`, {description: "Error saving preset. Please try again."});
                 }
             });
 
