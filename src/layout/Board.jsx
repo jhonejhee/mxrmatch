@@ -177,7 +177,7 @@ function Board() {
     const handleRemoveSound = (groupIndex, soundIndex) => {
         setSoundBoard((prevSoundBoard) => {
             const updatedSoundBoard = [...prevSoundBoard];
-            const soundName = updatedSoundBoard[groupIndex].sounds[soundIndex].name;
+            // const soundName = updatedSoundBoard[groupIndex].sounds[soundIndex].name;
     
             // Remove the sound from the group's sounds array
             updatedSoundBoard[groupIndex].sounds = updatedSoundBoard[groupIndex].sounds.filter((_, index) => index !== soundIndex);

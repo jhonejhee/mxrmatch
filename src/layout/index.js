@@ -1,6 +1,5 @@
 import MenuBar from "./MenuBar";
 import Board from "./Board";
-import { GlobalProvider } from 'context/GlobalContext';
 
 function MxrMatch() {
   return (
