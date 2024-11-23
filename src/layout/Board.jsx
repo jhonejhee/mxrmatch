@@ -119,7 +119,6 @@ function Board() {
                 return updatedInstances;
             });
         } else {
-            console.log(sound)
             // Play the audio
             const audio = new Audio(sound.path);
             audio.volume = sound.volume / 100;
