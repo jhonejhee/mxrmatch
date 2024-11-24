@@ -21,6 +21,7 @@ MxrMatch is a web application designed to provide a convenient way to mix and ma
 - Implement global mute functionality.
 - Implement responsive masonry grid layout.
 - Implement group properties (max column).
+- Implement name editing for groups and sounds.
 
 ## Contributing
 Feel free to contribute to the project by creating pull requests or submitting issues for any bugs or feature requests.
