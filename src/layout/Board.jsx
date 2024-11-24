@@ -57,6 +57,13 @@ function Board() {
         setSoundBoard((prevSoundBoard) => {
             const updatedSoundBoard = [...prevSoundBoard];
             updatedSoundBoard[groupIndex].sounds[soundIndex].volume = value[0];
+            
+            // Update the audio instance volume if it's currently playing
+            const soundName = updatedSoundBoard[groupIndex].sounds[soundIndex].name;
+            if (audioInstances[soundName]) {
+                audioInstances[soundName].volume = value[0] / 100;
+            }
+    
             return updatedSoundBoard;
         });
     };
