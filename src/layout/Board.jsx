@@ -377,7 +377,7 @@ function Board() {
                         </ContextMenuSub>
                         <ContextMenuSeparator />
                         <ContextMenuSub>
-                            <ContextMenuSubTrigger>Color</ContextMenuSubTrigger>
+                            <ContextMenuSubTrigger>Group Theme</ContextMenuSubTrigger>
                             <ContextMenuSubContent className="w-fit">
                                 <SwatchesPicker
                                     onChange={(color) => handleThemeChange(color, index)}
