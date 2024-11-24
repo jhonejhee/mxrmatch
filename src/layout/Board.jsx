@@ -362,6 +362,15 @@ function Board() {
                             Add Sound
                         </ContextMenuItem>
                         <ContextMenuSeparator />
+                        <ContextMenuSub>
+                            <ContextMenuSubTrigger>Group Theme</ContextMenuSubTrigger>
+                            <ContextMenuSubContent className="w-fit">
+                                <SwatchesPicker
+                                    onChange={(color) => handleThemeChange(color, index)}
+                                />
+                            </ContextMenuSubContent>
+                        </ContextMenuSub>
+                        <ContextMenuSeparator />
                         <ContextMenuItem className="text-red-400 focus:text-red-400" onClick={() => handleRemoveGroup(index)}>
                             Remove Group
                         </ContextMenuItem>
@@ -373,15 +382,6 @@ function Board() {
                                         {sound.name}
                                     </ContextMenuItem>
                                 ))}
-                            </ContextMenuSubContent>
-                        </ContextMenuSub>
-                        <ContextMenuSeparator />
-                        <ContextMenuSub>
-                            <ContextMenuSubTrigger>Group Theme</ContextMenuSubTrigger>
-                            <ContextMenuSubContent className="w-fit">
-                                <SwatchesPicker
-                                    onChange={(color) => handleThemeChange(color, index)}
-                                />
                             </ContextMenuSubContent>
                         </ContextMenuSub>
                     </ContextMenuContent>
