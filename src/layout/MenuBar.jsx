@@ -84,6 +84,7 @@ function AddGroupDialog({ isOpen, setIsOpen }) {
 
         const newGroup = {
             name: userInput.trim(),
+            theme: {background: null, text: null},
             sounds: []
         };
 
@@ -134,6 +135,7 @@ function SavePresetDialog({ isOpen, setIsOpen }) {
             _id: presetName.trim(),
             soundBoard: soundBoard.map((group) => ({
                 name: group.name,
+                theme: group.theme,
                 sounds: group.sounds.map((sound) => ({
                     name: sound.name,
                     path: sound.name, // Replace Blob URL with the attachment key (filename)

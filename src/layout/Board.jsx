@@ -9,6 +9,7 @@ import { Label } from 'components/ui/label';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent, ContextMenuSeparator } from "components/ui/context-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "components/ui/dialog"
 import InputValidation from 'components/ui/input-validation';
+import { SwatchesPicker } from 'react-color';
 
 function Board() {
     const { soundBoard, setSoundBoard, master, setMaster } = useContext(GlobalContext);
@@ -206,6 +207,21 @@ function Board() {
     };
 
 
+    // Theme
+    const handleThemeChange = (color, groupIndex) => {
+        setSoundBoard((prevSoundBoard) => {
+            const updatedSoundBoard = [...prevSoundBoard];
+
+            // get luminance to determine text contrast (black or white)
+            const rgb = color.hex.match(/\w\w/g).map((x) => parseInt(x, 16) / 255);
+            const luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+        
+            updatedSoundBoard[groupIndex].theme = {"background": color.hex, "text": luminance > 0.5 ? '#000000' : '#FFFFFF'}
+            
+            return updatedSoundBoard;
+        });
+    }
+
     return (
         <div className='w-full h-full flex flex-wrap gap-2 items-start justify-start overflow-auto'>
             {/* Global Sound Settings */}
@@ -249,7 +265,13 @@ function Board() {
             {soundBoard.map((group, index) => (
                 <ContextMenu key={index}>
                     <ContextMenuTrigger className="flex h-fit w-fit items-center justify-center rounded-md text-sm">
-                        <Card className="select-none shadow">
+                        <Card
+                            className="select-none shadow"
+                            style={{
+                                backgroundColor: group.theme?.background || '',
+                                color: group.theme?.text || '',
+                            }}
+                        >
                             <CardHeader className="px-2 py-2">
                                 <CardTitle className="text-lg truncate">{group.name}</CardTitle>
                             </CardHeader>
@@ -269,12 +291,18 @@ function Board() {
                                             <Button
                                                 variant="outline"
                                                 disabled={true}
-                                                className={`min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] border shadow`}
+                                                className="min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] border shadow"
+                                                style={{
+                                                    backgroundColor: group.theme?.background || '',
+                                                    color: group.theme?.text || '',
+                                                }}
                                             >
-                                               <AudioLines className='w-5 h-5'/> 
+                                                <AudioLines
+                                                    className='w-5 h-5'
+                                                /> 
                                             </Button>
 
-                                            {/* Label Thumb */}
+                                            {/* Label */}
                                             <div className="flex flex-row flex-no-wrap items-center justify-center text-center">
                                                 <Label className="text-xs">No Sound Added</Label>
                                             </div>
@@ -287,8 +315,13 @@ function Board() {
                                             {/* Sound Button */}
                                             <ToggleGroupItem
                                                 value={sound.name}
-                                                className={`flex items-center transition-none data-[state=on]:bg-green-500 data-[state=on]:text-green-50
-                                                hover:bg-transparent dark:hover:bg-transparent min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] shadow`}
+                                                className={`flex items-center transition-none min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] shadow
+                                                hover:bg-transparent hover:text-current dark:hover:text-current dark:hover:bg-transparent
+                                                data-[state=on]:border-b-green-500 data-[state=on]:border-b-8
+                                                data-[state=on]:bg-inherit data-[state=on]:text-inherit
+                                                dark:data-[state=on]:border-b-green-500 dark:data-[state=on]:border-b-8
+                                                dark:data-[state=on]:bg-inherit dark:data-[state=on]:text-inherit
+                                                `}
                                                 onClick={() => toggleSound(index, sindex)}
                                             >
                                                 <span className="line-clamp-2 break-words text-xs overflow-hidden w-full">
@@ -328,18 +361,27 @@ function Board() {
                         <ContextMenuItem onClick={() => handleAddSound(index)}>
                             Add Sound
                         </ContextMenuItem>
+                        <ContextMenuSeparator />
                         <ContextMenuItem className="text-red-400 focus:text-red-400" onClick={() => handleRemoveGroup(index)}>
                             Remove Group
                         </ContextMenuItem>
-                        <ContextMenuSeparator />
                         <ContextMenuSub>
-                            <ContextMenuSubTrigger disabled={group.sounds.length < 1}>Remove Sound...</ContextMenuSubTrigger>
+                            <ContextMenuSubTrigger disabled={group.sounds.length < 1}>Remove Sound</ContextMenuSubTrigger>
                             <ContextMenuSubContent className="w-40">
                                 {group.sounds.map((sound, sindex) => (
                                     <ContextMenuItem key={sindex} className="text-red-400 focus:text-red-400" onClick={() => handleRemoveSound(index, sindex)}>
                                         {sound.name}
                                     </ContextMenuItem>
                                 ))}
+                            </ContextMenuSubContent>
+                        </ContextMenuSub>
+                        <ContextMenuSeparator />
+                        <ContextMenuSub>
+                            <ContextMenuSubTrigger>Color</ContextMenuSubTrigger>
+                            <ContextMenuSubContent className="w-fit">
+                                <SwatchesPicker
+                                    onChange={(color) => handleThemeChange(color, index)}
+                                />
                             </ContextMenuSubContent>
                         </ContextMenuSub>
                     </ContextMenuContent>
