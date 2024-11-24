@@ -10,6 +10,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, C
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "components/ui/dialog"
 import InputValidation from 'components/ui/input-validation';
 import { SwatchesPicker } from 'react-color';
+import Masonry, {ResponsiveMasonry} from "react-responsive-masonry";
 
 function Board() {
     const { soundBoard, setSoundBoard, master, setMaster } = useContext(GlobalContext);
@@ -224,170 +225,172 @@ function Board() {
 
     return (
         <div className='w-full h-full flex flex-wrap gap-2 items-start justify-start overflow-auto'>
-            {/* Global Sound Settings */}
-            <Card className="select-none shadow">
-                    
-                <CardHeader className="px-2 py-2 flex items-center justify-center text-center">
-                    <CardTitle className="text-lg truncate">M/C</CardTitle>
-                </CardHeader>
+            {/* <Masonry columnsCount={5} gutter='10px'> */}
+                {/* Global Sound Settings */}
+                <Card className="select-none shadow">
+                        
+                    <CardHeader className="px-2 py-2 flex items-center justify-center text-center">
+                        <CardTitle className="text-lg truncate">M/C</CardTitle>
+                    </CardHeader>
 
-                <CardContent className="p-2">
-                    <div className="flex flex-col gap-4 items-center justify-center">
-                        <Button
-                            variant={`${master.muted ? "destructive" : "outline"}`}
-                            size="icon"
-                            className={`rounded-full`}
-                            onClick={toggleMuteMaster}
-                        >
-                            {
-                                master.muted ? (<VolumeX className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
-                                : master.global_volume === 0 ? (<VolumeOff className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
-                                : master.global_volume < 50 ? (<Volume1 className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
-                                : (<Volume2 className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
-                            }
-                        </Button>
-                        <SliderV
-                            defaultValue={[50]}
-                            value={[master.global_volume]}
-                            onValueChange={(value) => handleVolumeChangeMaster("global_volume", value)}
-                            max={100}
-                            min={0}
-                            step={1}
-                            className={`${master.muted ? "opacity-30" : "opacity-100"}`}
-                            thumbClassName="h-4 w-4 ring-offset-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ring-offset-black"
-                            // disabled={sound.muted}
-                        />
-                        {master.global_volume}
-                    </div>
-                </CardContent>
-            </Card>
+                    <CardContent className="p-2">
+                        <div className="flex flex-col gap-4 items-center justify-center">
+                            <Button
+                                variant={`${master.muted ? "destructive" : "outline"}`}
+                                size="icon"
+                                className={`rounded-full`}
+                                onClick={toggleMuteMaster}
+                            >
+                                {
+                                    master.muted ? (<VolumeX className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
+                                    : master.global_volume === 0 ? (<VolumeOff className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
+                                    : master.global_volume < 50 ? (<Volume1 className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
+                                    : (<Volume2 className='w-4 h-4 cursor-pointer' onClick={() => toggleMuteMaster()}/>)
+                                }
+                            </Button>
+                            <SliderV
+                                defaultValue={[50]}
+                                value={[master.global_volume]}
+                                onValueChange={(value) => handleVolumeChangeMaster("global_volume", value)}
+                                max={100}
+                                min={0}
+                                step={1}
+                                className={`${master.muted ? "opacity-30" : "opacity-100"}`}
+                                thumbClassName="h-4 w-4 ring-offset-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ring-offset-black"
+                                // disabled={sound.muted}
+                            />
+                            {master.global_volume}
+                        </div>
+                    </CardContent>
+                </Card>
 
-            {soundBoard.map((group, index) => (
-                <ContextMenu key={index}>
-                    <ContextMenuTrigger className="flex h-fit w-fit items-center justify-center rounded-md text-sm">
-                        <Card
-                            className="select-none shadow"
-                            style={{
-                                backgroundColor: group.theme?.background || '',
-                                color: group.theme?.text || '',
-                            }}
-                        >
-                            <CardHeader className="px-2 py-2">
-                                <CardTitle className="text-lg truncate">{group.name}</CardTitle>
-                            </CardHeader>
+                {soundBoard.map((group, index) => (
+                    <ContextMenu key={index}>
+                        <ContextMenuTrigger className="flex h-fit w-fit items-center justify-center rounded-md text-sm">
+                            <Card
+                                className="select-none shadow"
+                                style={{
+                                    backgroundColor: group.theme?.background || '',
+                                    color: group.theme?.text || '',
+                                }}
+                            >
+                                <CardHeader className="px-2 py-2">
+                                    <CardTitle className="text-lg truncate">{group.name}</CardTitle>
+                                </CardHeader>
 
-                            <CardContent className="p-2 min-w-[116px] min-h-[100px]">
-                                <ToggleGroup
-                                    type="multiple"
-                                    className="w-fit flex flex-wrap items-start justify-start gap-2 max-w-[532px]"
-                                    value={playlist}
-                                    onValueChange={(value) => setPlaylist(value)}
-                                    variant="outline"
-                                >
-                                    {/* Default sound button */}
-                                    { group.sounds.length < 1 && 
-                                        <div key="skeleton" className="flex flex-col gap-2">
-                                            
-                                            <Button
-                                                variant="outline"
-                                                disabled={true}
-                                                className="min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] border shadow"
-                                                style={{
-                                                    backgroundColor: group.theme?.background || '',
-                                                    color: group.theme?.text || '',
-                                                }}
-                                            >
-                                                <AudioLines
-                                                    className='w-5 h-5'
-                                                /> 
-                                            </Button>
+                                <CardContent className="p-2 min-w-[116px] min-h-[100px]">
+                                    <ToggleGroup
+                                        type="multiple"
+                                        className="w-fit flex flex-wrap items-start justify-start gap-2 max-w-[532px]"
+                                        value={playlist}
+                                        onValueChange={(value) => setPlaylist(value)}
+                                        variant="outline"
+                                    >
+                                        {/* Default sound button */}
+                                        { group.sounds.length < 1 && 
+                                            <div key="skeleton" className="flex flex-col gap-2">
+                                                
+                                                <Button
+                                                    variant="outline"
+                                                    disabled={true}
+                                                    className="min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] border shadow"
+                                                    style={{
+                                                        backgroundColor: group.theme?.background || '',
+                                                        color: group.theme?.text || '',
+                                                    }}
+                                                >
+                                                    <AudioLines
+                                                        className='w-5 h-5'
+                                                    /> 
+                                                </Button>
 
-                                            {/* Label */}
-                                            <div className="flex flex-row flex-no-wrap items-center justify-center text-center">
-                                                <Label className="text-xs">No Sound Added</Label>
+                                                {/* Label */}
+                                                <div className="flex flex-row flex-no-wrap items-center justify-center text-center">
+                                                    <Label className="text-xs">No Sound Added</Label>
+                                                </div>
+
                                             </div>
+                                        }
 
-                                        </div>
-                                    }
+                                        {group?.sounds.map((sound, sindex) => (
+                                            <div key={sindex} className="flex flex-col gap-2">
+                                                {/* Sound Button */}
+                                                <ToggleGroupItem
+                                                    value={sound.name}
+                                                    className={`flex items-center transition-none min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] shadow
+                                                    hover:bg-transparent hover:text-current dark:hover:text-current dark:hover:bg-transparent
+                                                    data-[state=on]:border-b-green-500 data-[state=on]:border-b-8
+                                                    data-[state=on]:bg-inherit data-[state=on]:text-inherit
+                                                    dark:data-[state=on]:border-b-green-500 dark:data-[state=on]:border-b-8
+                                                    dark:data-[state=on]:bg-inherit dark:data-[state=on]:text-inherit
+                                                    `}
+                                                    onClick={() => toggleSound(index, sindex)}
+                                                >
+                                                    <span className="line-clamp-2 break-words text-xs overflow-hidden w-full">
+                                                        {sound.name}
+                                                    </span>
+                                                </ToggleGroupItem>
+                                                                            
+                                                {/* Volumne Thumb */}
+                                                <div className="flex flex-row flex-no-wrap gap-1 items-center justify-between">
+                                                    {
+                                                        sound.muted ? (<VolumeX className='w-4 h-4 cursor-pointer text-red-400 dark:text-red-500' onClick={() => toggleMute(index, sindex)}/>)
+                                                        : sound.volume === 0 ? (<VolumeOff className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
+                                                        : sound.volume < 50 ? (<Volume1 className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
+                                                        : (<Volume2 className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
+                                                    }
+                                                    <Slider
+                                                        defaultValue={[50]}
+                                                        value={[sound.volume]}
+                                                        onValueChange={(value) => handleVolumeChange(index, sindex, value)}
+                                                        max={100}
+                                                        min={0}
+                                                        step={1}
+                                                        className={`${sound.muted ? "opacity-30" : "opacity-100"}`}
+                                                        thumbClassName="h-4 w-4 ring-offset-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ring-offset-black"
+                                                        // disabled={sound.muted}
+                                                    />
+                                                    {/* {sound.volume} */}
+                                                </div>
 
-                                    {group?.sounds.map((sound, sindex) => (
-                                        <div key={sindex} className="flex flex-col gap-2">
-                                            {/* Sound Button */}
-                                            <ToggleGroupItem
-                                                value={sound.name}
-                                                className={`flex items-center transition-none min-w-[100px] max-w-[100px] min-h-[60px] max-h-[60px] shadow
-                                                hover:bg-transparent hover:text-current dark:hover:text-current dark:hover:bg-transparent
-                                                data-[state=on]:border-b-green-500 data-[state=on]:border-b-8
-                                                data-[state=on]:bg-inherit data-[state=on]:text-inherit
-                                                dark:data-[state=on]:border-b-green-500 dark:data-[state=on]:border-b-8
-                                                dark:data-[state=on]:bg-inherit dark:data-[state=on]:text-inherit
-                                                `}
-                                                onClick={() => toggleSound(index, sindex)}
-                                            >
-                                                <span className="line-clamp-2 break-words text-xs overflow-hidden w-full">
-                                                    {sound.name}
-                                                </span>
-                                            </ToggleGroupItem>
-                                                                         
-                                            {/* Volumne Thumb */}
-                                            <div className="flex flex-row flex-no-wrap gap-1 items-center justify-between">
-                                                {
-                                                    sound.muted ? (<VolumeX className='w-4 h-4 cursor-pointer text-red-400 dark:text-red-500' onClick={() => toggleMute(index, sindex)}/>)
-                                                    : sound.volume === 0 ? (<VolumeOff className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
-                                                    : sound.volume < 50 ? (<Volume1 className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
-                                                    : (<Volume2 className='w-4 h-4 cursor-pointer' onClick={() => toggleMute(index, sindex)}/>)
-                                                }
-                                                <Slider
-                                                    defaultValue={[50]}
-                                                    value={[sound.volume]}
-                                                    onValueChange={(value) => handleVolumeChange(index, sindex, value)}
-                                                    max={100}
-                                                    min={0}
-                                                    step={1}
-                                                    className={`${sound.muted ? "opacity-30" : "opacity-100"}`}
-                                                    thumbClassName="h-4 w-4 ring-offset-0 focus:ring-offset-0 focus-visible:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none ring-offset-black"
-                                                    // disabled={sound.muted}
-                                                />
-                                                {/* {sound.volume} */}
                                             </div>
-
-                                        </div>
+                                        ))}
+                                    </ToggleGroup>
+                                </CardContent>
+                            </Card>
+                        </ContextMenuTrigger>
+                        <ContextMenuContent className="w-40">
+                            <ContextMenuItem onClick={() => handleAddSound(index)}>
+                                Add Sound
+                            </ContextMenuItem>
+                            <ContextMenuSeparator />
+                            <ContextMenuSub>
+                                <ContextMenuSubTrigger>Group Theme</ContextMenuSubTrigger>
+                                <ContextMenuSubContent className="w-fit">
+                                    <SwatchesPicker
+                                        onChange={(color) => handleThemeChange(color, index)}
+                                    />
+                                </ContextMenuSubContent>
+                            </ContextMenuSub>
+                            <ContextMenuSeparator />
+                            <ContextMenuItem className="text-red-400 focus:text-red-400" onClick={() => handleRemoveGroup(index)}>
+                                Remove Group
+                            </ContextMenuItem>
+                            <ContextMenuSub>
+                                <ContextMenuSubTrigger disabled={group.sounds.length < 1}>Remove Sound</ContextMenuSubTrigger>
+                                <ContextMenuSubContent className="w-40">
+                                    {group.sounds.map((sound, sindex) => (
+                                        <ContextMenuItem key={sindex} className="text-red-400 focus:text-red-400" onClick={() => handleRemoveSound(index, sindex)}>
+                                            {sound.name}
+                                        </ContextMenuItem>
                                     ))}
-                                </ToggleGroup>
-                            </CardContent>
-                        </Card>
-                    </ContextMenuTrigger>
-                    <ContextMenuContent className="w-40">
-                        <ContextMenuItem onClick={() => handleAddSound(index)}>
-                            Add Sound
-                        </ContextMenuItem>
-                        <ContextMenuSeparator />
-                        <ContextMenuSub>
-                            <ContextMenuSubTrigger>Group Theme</ContextMenuSubTrigger>
-                            <ContextMenuSubContent className="w-fit">
-                                <SwatchesPicker
-                                    onChange={(color) => handleThemeChange(color, index)}
-                                />
-                            </ContextMenuSubContent>
-                        </ContextMenuSub>
-                        <ContextMenuSeparator />
-                        <ContextMenuItem className="text-red-400 focus:text-red-400" onClick={() => handleRemoveGroup(index)}>
-                            Remove Group
-                        </ContextMenuItem>
-                        <ContextMenuSub>
-                            <ContextMenuSubTrigger disabled={group.sounds.length < 1}>Remove Sound</ContextMenuSubTrigger>
-                            <ContextMenuSubContent className="w-40">
-                                {group.sounds.map((sound, sindex) => (
-                                    <ContextMenuItem key={sindex} className="text-red-400 focus:text-red-400" onClick={() => handleRemoveSound(index, sindex)}>
-                                        {sound.name}
-                                    </ContextMenuItem>
-                                ))}
-                            </ContextMenuSubContent>
-                        </ContextMenuSub>
-                    </ContextMenuContent>
-                </ContextMenu>
+                                </ContextMenuSubContent>
+                            </ContextMenuSub>
+                        </ContextMenuContent>
+                    </ContextMenu>
 
-            ))}
+                ))}
+            {/* </Masonry> */}
             {/* Sound Name Input Dialog */}
             <SoundNameInput
                 isSoundInputOpen={isSoundInputOpen}
